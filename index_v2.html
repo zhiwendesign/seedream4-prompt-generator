@@ -1371,58 +1371,55 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
       };
       
       // 构建流畅的自然语言描述
-      let prompt = '';
-      
-      // 1. 开始描述风格和色彩
-      if (promptSections.style) {
-        prompt = '一幅' + promptSections.style + '的' + (promptSections.color ? promptSections.color + '，' : '');
-      } else if (promptSections.color) {
-        prompt = '色彩' + promptSections.color + '，';
+    let prompt = '';
+    
+    // 1. 开始描述风格和色彩
+    if (promptSections.style) {
+      prompt = `这是一幅`;
+      if (promptSections.color) {
+        prompt += `色彩${promptSections.color}的`;
+      }
+      prompt += `${promptSections.style}作品`;
+    } else if (promptSections.color) {
+      prompt = `这是一幅色彩${promptSections.color}的作品`;
+    }
+    
+    // 2. 添加场景和主体描述
+    if (promptSections.scene || promptSections.subject) {
+      if (prompt) {
+        prompt += `，`;
+      } else {
+        prompt = `画面中`;
       }
       
-      // 2. 描述场景背景
-      if (promptSections.scene) {
-        if (prompt) {
-          prompt += '画面背景是' + promptSections.scene + '，';
-        } else {
-          prompt = '画面呈现' + promptSections.scene + '，';
-        }
+      if (promptSections.scene && promptSections.subject) {
+        prompt += `在${promptSections.scene}的背景下，主体是${promptSections.subject}`;
+      } else if (promptSections.scene) {
+        prompt += `呈现了${promptSections.scene}的景象`;
+      } else if (promptSections.subject) {
+        prompt += `的主体是${promptSections.subject}`;
       }
-      
-      // 3. 描述主体
-      if (promptSections.subject) {
-        if (prompt) {
-          // 根据场景和主体的内容调整句式
-          if (prompt.includes('背景是') || prompt.includes('呈现')) {
-            prompt += '画面主体是' + promptSections.subject + '，';
-          } else {
-            prompt += promptSections.subject + '，';
-          }
-        } else {
-          prompt = '主体是' + promptSections.subject + '，';
-        }
-      }
-      
-      // 4. 添加细节描述
-      if (promptSections.details) {
-        prompt += promptSections.details + '，';
-      }
-      
-      // 5. 添加氛围描述
-      if (promptSections.atmosphere) {
-        prompt += '整体氛围' + promptSections.atmosphere + '，';
-      }
-      
-      // 6. 添加风格补充细节
-      if (promptSections.supplement) {
-        prompt += promptSections.supplement + '，';
-      }
-      
-      // 移除末尾逗号并添加句号
-      prompt = prompt.replace(/，$/, '');
-      if (prompt && !prompt.endsWith('。')) {
-        prompt += '。';
-      }
+    }
+    
+    // 3. 添加细节描述
+    if (promptSections.details) {
+      prompt += prompt ? `，${promptSections.details}` : `${promptSections.details}`;
+    }
+    
+    // 4. 添加氛围描述
+    if (promptSections.atmosphere) {
+      prompt += prompt ? `，整体营造出${promptSections.atmosphere}的氛围` : `整体营造出${promptSections.atmosphere}的氛围`;
+    }
+    
+    // 5. 添加风格补充细节
+    if (promptSections.supplement) {
+      prompt += prompt ? `，${promptSections.supplement}` : `${promptSections.supplement}`;
+    }
+    
+    // 确保以句号结尾
+    if (prompt && !prompt.endsWith('。')) {
+      prompt += '。';
+    }
       
       // 如果没有任何内容，返回提示信息
       if (prompt === '') {
