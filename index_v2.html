@@ -335,104 +335,11 @@
           </form>
         </section>
         
-        <!-- 提示词模板库 -->
-        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-bold flex items-center">
-              <i class="fa fa-bookmark text-secondary mr-2"></i>
-              提示词模板库
-            </h3>
-            <div class="relative">
-              <input type="text" id="template-search" placeholder="搜索模板..." class="bg-dark-light border border-gray-700 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
-              <i class="fa fa-search absolute left-3 top-3 text-gray-400"></i>
-            </div>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- 模板卡片 -->
-            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium">超写实人像</h4>
-                <span class="text-xs bg-primary bg-opacity-20 text-primary px-2 py-1 rounded">人像</span>
-              </div>
-              <p class="text-sm text-gray-300 mb-3 line-clamp-2">一个年轻女性的超写实肖像，柔和的自然光，8K分辨率，细腻的皮肤纹理，电影灯光效果</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">ID: TPL-001</span>
-                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
-              </div>
-            </div>
-            
-            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium">赛博朋克城市</h4>
-                <span class="text-xs bg-secondary bg-opacity-20 text-secondary px-2 py-1 rounded">场景</span>
-              </div>
-              <p class="text-sm text-gray-300 mb-3 line-clamp-2">未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道，全息广告牌，高楼大厦，8K分辨率，电影级渲染</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">ID: TPL-002</span>
-                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
-              </div>
-            </div>
-            
-            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium">中国古风山水</h4>
-                <span class="text-xs bg-green-500 bg-opacity-20 text-green-500 px-2 py-1 rounded">艺术</span>
-              </div>
-              <p class="text-sm text-gray-300 mb-3 line-clamp-2">中国传统山水画风格，水墨丹青，远山近水，古松奇石，茅屋小桥，云雾缭绕，8K分辨率，超高清细节</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">ID: TPL-003</span>
-                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
-              </div>
-            </div>
-            
-            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium">动漫风格角色</h4>
-                <span class="text-xs bg-pink-500 bg-opacity-20 text-pink-500 px-2 py-1 rounded">动漫</span>
-              </div>
-              <p class="text-sm text-gray-300 mb-3 line-clamp-2">日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服，背景是樱花盛开的校园，高清细节，动态光影</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">ID: TPL-004</span>
-                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
-              </div>
-            </div>
-            
-            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium">3D渲染产品</h4>
-                <span class="text-xs bg-blue-500 bg-opacity-20 text-blue-500 px-2 py-1 rounded">产品</span>
-              </div>
-              <p class="text-sm text-gray-300 mb-3 line-clamp-2">现代简约风格的智能手机，透明材质，悬浮在半空中，周围有彩色光晕，工作室灯光，8K分辨率，C4D渲染</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">ID: TPL-005</span>
-                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
-              </div>
-            </div>
-            
-            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium">奇幻生物</h4>
-                <span class="text-xs bg-purple-500 bg-opacity-20 text-purple-500 px-2 py-1 rounded">奇幻</span>
-              </div>
-              <p class="text-sm text-gray-300 mb-3 line-clamp-2">神话中的独角兽，雪白的毛发，彩虹色的角，站在魔法森林中，月光照耀，周围有发光的植物和小精灵，超写实风格</p>
-              <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">ID: TPL-006</span>
-                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-6 text-center">
-            <button id="load-more-templates" class="px-4 py-2 border border-gray-700 rounded-lg hover:border-primary hover:text-primary transition-all-300">
-              加载更多模板
-            </button>
-          </div>
-        </section>
+
       </div>
       
       <!-- 右侧预览区 -->
-      <div class="lg:col-span-1 space-y-8">
+      <div class="lg:col-span-1 space-y-8 lg:sticky lg:top-8">
         <!-- 提示词预览 -->
         <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
           <h3 class="text-xl font-bold mb-4 flex items-center">
@@ -480,45 +387,7 @@
           </div>
         </section>
         
-        <!-- 效果预览 -->
-        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
-          <h3 class="text-xl font-bold mb-4 flex items-center">
-            <i class="fa fa-image text-secondary mr-2"></i>
-            效果预览
-          </h3>
-          
-          <div class="space-y-4">
-            <div class="bg-dark-light rounded-lg overflow-hidden">
-              <img src="https://p26-doubao-search-sign.byteimg.com/labis/image/5ed22fb401df6cd3e3d6d73f9fc90e20~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=vR92arDzYDDkoIROghlh6conYO4%3D" alt="中国古风示例" class="w-full h-48 object-cover">
-              <div class="p-3">
-                <h4 class="font-medium text-sm">中国古风山水</h4>
-                <p class="text-xs text-gray-400 mt-1">中国传统山水画风格，水墨丹青，远山近水，古松奇石</p>
-              </div>
-            </div>
-            
-            <div class="bg-dark-light rounded-lg overflow-hidden">
-              <img src="https://p11-doubao-search-sign.byteimg.com/labis/image/e32fbdb124eb8ed21e5988da8953106e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=6fNfBkGeunEntWy%2FKvn%2B5ZVosyE%3D" alt="赛博朋克示例" class="w-full h-48 object-cover">
-              <div class="p-3">
-                <h4 class="font-medium text-sm">赛博朋克风格</h4>
-                <p class="text-xs text-gray-400 mt-1">未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道</p>
-              </div>
-            </div>
-            
-            <div class="bg-dark-light rounded-lg overflow-hidden">
-              <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-6w9my0ksvp/472404b78954468f90bd79f32f4ec3c8~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=lHxrUVf62vM4FbV%2BO%2FHz%2FsOYpM8%3D" alt="动漫风格示例" class="w-full h-48 object-cover">
-              <div class="p-3">
-                <h4 class="font-medium text-sm">动漫风格角色</h4>
-                <p class="text-xs text-gray-400 mt-1">日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-6 text-center">
-            <button id="generate-image" class="px-4 py-2 bg-secondary hover:bg-opacity-80 rounded-lg transition-all-300 flex items-center justify-center mx-auto">
-              <i class="fa fa-camera mr-2"></i> 生成图像
-            </button>
-          </div>
-        </section>
+
         
         <!-- 历史记录 -->
         <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
@@ -599,45 +468,7 @@
     </div>
   </footer>
 
-  <!-- 生成图像模态框 -->
-  <div id="generate-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
-    <div class="bg-dark-light rounded-xl p-6 max-w-lg w-full mx-4 border border-gray-700">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-bold">生成图像</h3>
-        <button id="close-modal" class="text-gray-400 hover:text-light transition-all-300">
-          <i class="fa fa-times text-xl"></i>
-        </button>
-      </div>
-      
-      <div id="generation-progress" class="mb-6">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-sm">正在生成图像...</span>
-          <span id="progress-percentage" class="text-sm text-primary">0%</span>
-        </div>
-        <div class="w-full bg-dark rounded-full h-2.5">
-          <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
-        </div>
-      </div>
-      
-      <div id="generation-result" class="hidden">
-        <div class="mb-4">
-          <label class="block text-sm text-gray-400 mb-2">生成结果</label>
-          <div class="bg-dark rounded-lg overflow-hidden">
-            <img id="generated-image" src="" alt="生成的图像" class="w-full h-auto">
-          </div>
-        </div>
-        
-        <div class="grid grid-cols-2 gap-4">
-          <button id="download-image" class="px-4 py-2 bg-secondary hover:bg-opacity-80 rounded-lg transition-all-300 flex items-center justify-center">
-            <i class="fa fa-download mr-2"></i> 下载图像
-          </button>
-          <button id="regenerate-image" class="px-4 py-2 border border-gray-700 hover:border-primary hover:text-primary transition-all-300 flex items-center justify-center">
-            <i class="fa fa-refresh mr-2"></i> 重新生成
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
   <script>
     // DOM元素
@@ -648,28 +479,18 @@
     const editPromptBtn = document.getElementById('edit-prompt');
     const resetFormBtn = document.getElementById('reset-form');
     const randomPromptBtn = document.getElementById('random-prompt');
-    const generateImageBtn = document.getElementById('generate-image');
-    const generateModal = document.getElementById('generate-modal');
-    const closeModalBtn = document.getElementById('close-modal');
-    const progressBar = document.getElementById('progress-bar');
-    const progressPercentage = document.getElementById('progress-percentage');
-    const generationProgress = document.getElementById('generation-progress');
-    const generationResult = document.getElementById('generation-result');
-    const generatedImage = document.getElementById('generated-image');
-    const downloadImageBtn = document.getElementById('download-image');
-    const regenerateImageBtn = document.getElementById('regenerate-image');
+
     const savePromptBtn = document.getElementById('save-prompt');
     const themeToggleBtn = document.getElementById('theme-toggle');
     const stepsInput = document.getElementById('steps');
     const stepsValue = document.getElementById('steps-value');
     const creativityInput = document.getElementById('creativity');
     const creativityValue = document.getElementById('creativity-value');
-    const templateSearch = document.getElementById('template-search');
-    const templateCards = document.querySelectorAll('.template-card');
-    const loadMoreTemplatesBtn = document.getElementById('load-more-templates');
+
     const historyList = document.getElementById('history-list');
     const clearHistoryBtn = document.getElementById('clear-history');
     const promptSuggestions = document.getElementById('prompt-suggestions');
+    const templateCards = document.querySelectorAll('.template-card');
     // 新增DOM元素 - 快速提示词生成
     const quickKeywordsInput = document.getElementById('quick-keywords');
 const generateQuickPromptBtn = document.getElementById('generate-quick-prompt');
@@ -684,93 +505,7 @@ const structuredSupplementInput = document.getElementById('structured-supplement
 const generateStructuredPromptBtn = document.getElementById('generate-structured-prompt');
 const loadStructuredExampleBtn = document.getElementById('load-structured-example');
 
-    // 提示词模板数据
-    const promptTemplates = [
-      {
-        id: 'TPL-001',
-        title: '超写实人像',
-        category: '人像',
-        description: '一个年轻女性的超写实肖像，柔和的自然光，8K分辨率，细腻的皮肤纹理，电影灯光效果',
-        values: {
-          artStyle: '超写实 (hyperrealistic)',
-          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
-          subject: '一个年轻女性的超写实肖像',
-          environment: '柔和的自然光',
-          colorStyle: '自然色彩 (natural colors)',
-          lighting: '电影灯光 (cinematic lighting)'
-        }
-      },
-      {
-        id: 'TPL-002',
-        title: '赛博朋克城市',
-        category: '场景',
-        description: '未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道，全息广告牌，高楼大厦，8K分辨率，电影级渲染',
-        values: {
-          artStyle: '赛博朋克 (Cyberpunk)',
-          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
-          subject: '未来主义赛博朋克城市夜景',
-          environment: '霓虹灯闪烁，雨水街道，全息广告牌，高楼大厦',
-          colorStyle: '高对比度 (high contrast), 鲜艳色彩 (vibrant colors)',
-          lighting: '霓虹灯 (neon lights)'
-        }
-      },
-      {
-        id: 'TPL-003',
-        title: '中国古风山水',
-        category: '艺术',
-        description: '中国传统山水画风格，水墨丹青，远山近水，古松奇石，茅屋小桥，云雾缭绕，8K分辨率，超高清细节',
-        values: {
-          artStyle: '中国古风 (Chinese ancient style)',
-          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
-          subject: '中国传统山水画',
-          environment: '远山近水，古松奇石，茅屋小桥，云雾缭绕',
-          colorStyle: '水墨丹青 (ink wash painting)',
-          lighting: '自然光 (natural light)'
-        }
-      },
-      {
-        id: 'TPL-004',
-        title: '动漫风格角色',
-        category: '动漫',
-        description: '日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服，背景是樱花盛开的校园，高清细节，动态光影',
-        values: {
-          artStyle: '动漫风格 (Anime style)',
-          quality: '细节丰富 (highly detailed), 高清 (high definition)',
-          subject: '日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服',
-          environment: '樱花盛开的校园',
-          colorStyle: '鲜艳色彩 (vibrant colors)',
-          lighting: '动态光影 (dynamic lighting)'
-        }
-      },
-      {
-        id: 'TPL-005',
-        title: '3D渲染产品',
-        category: '产品',
-        description: '现代简约风格的智能手机，透明材质，悬浮在半空中，周围有彩色光晕，工作室灯光，8K分辨率，C4D渲染',
-        values: {
-          artStyle: '3D渲染, C4D, OC渲染 (Octane Render)',
-          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
-          subject: '现代简约风格的智能手机，透明材质，悬浮在半空中',
-          environment: '周围有彩色光晕',
-          colorStyle: '高对比度 (high contrast)',
-          lighting: '工作室灯光 (studio lighting)'
-        }
-      },
-      {
-        id: 'TPL-006',
-        title: '奇幻生物',
-        category: '奇幻',
-        description: '神话中的独角兽，雪白的毛发，彩虹色的角，站在魔法森林中，月光照耀，周围有发光的植物和小精灵，超写实风格',
-        values: {
-          artStyle: '超写实 (hyperrealistic), 奇幻风格 (fantasy style)',
-          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
-          subject: '神话中的独角兽，雪白的毛发，彩虹色的角',
-          environment: '魔法森林中，周围有发光的植物和小精灵',
-          colorStyle: '鲜艳色彩 (vibrant colors)',
-          lighting: '月光 (moonlight)'
-        }
-      }
-    ];
+
 
     // 随机提示词数据
     const randomSubjects = [
@@ -1663,61 +1398,7 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
       updatePromptPreview();
     }
 
-    // 生成图像
-    function generateImage() {
-      // 显示模态框
-      generateModal.classList.remove('hidden');
-      generationProgress.classList.remove('hidden');
-      generationResult.classList.add('hidden');
-      
-      // 重置进度条
-      progressBar.style.width = '0%';
-      progressPercentage.textContent = '0%';
-      
-      // 模拟生成进度
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 10) + 5;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          
-          // 延迟显示结果，模拟最终处理
-          setTimeout(() => {
-            generationProgress.classList.add('hidden');
-            generationResult.classList.remove('hidden');
-            
-            // 设置生成的图像（使用示例图像）
-            const exampleImages = [
-              'https://p26-doubao-search-sign.byteimg.com/labis/image/5ed22fb401df6cd3e3d6d73f9fc90e20~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=vR92arDzYDDkoIROghlh6conYO4%3D',
-              'https://p11-doubao-search-sign.byteimg.com/labis/image/e32fbdb124eb8ed21e5988da8953106e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=6fNfBkGeunEntWy%2FKvn%2B5ZVosyE%3D',
-              'https://p3-doubao-search-sign.byteimg.com/tos-cn-i-6w9my0ksvp/472404b78954468f90bd79f32f4ec3c8~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=lHxrUVf62vM4FbV%2BO%2FHz%2FsOYpM8%3D'
-            ];
-            const randomImage = exampleImages[Math.floor(Math.random() * exampleImages.length)];
-            generatedImage.src = randomImage;
-            
-            // 添加到历史记录
-            addToHistory(promptPreview.value);
-          }, 500);
-        }
-        
-        progressBar.style.width = `${progress}%`;
-        progressPercentage.textContent = `${progress}%`;
-      }, 200);
-    }
 
-    // 关闭模态框
-    function closeModal() {
-      generateModal.classList.add('hidden');
-    }
-
-    // 下载图像
-    function downloadImage() {
-      const link = document.createElement('a');
-      link.href = generatedImage.src;
-      link.download = 'generated-image.png';
-      link.click();
-    }
 
     // 保存提示词
     function savePrompt() {
@@ -1777,6 +1458,12 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
       // 添加到历史记录列表的顶部
       historyList.insertBefore(historyItem, historyList.firstChild);
       
+      // 限制历史记录数量为最近10条
+      const historyItems = historyList.querySelectorAll('.bg-dark-light');
+      if (historyItems.length > 10) {
+        historyList.removeChild(historyItems[historyItems.length - 1]);
+      }
+      
       // 保存到本地存储
       saveHistoryToLocalStorage();
     }
@@ -1801,7 +1488,10 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
 
     // 从本地存储加载历史记录
     function loadHistoryFromLocalStorage() {
-      const historyItems = JSON.parse(localStorage.getItem('promptHistory') || '[]');
+      let historyItems = JSON.parse(localStorage.getItem('promptHistory') || '[]');
+      
+      // 只加载最近10条记录
+      historyItems = historyItems.slice(-10);
       
       historyItems.forEach(item => {
         const historyItem = document.createElement('div');
@@ -1854,52 +1544,7 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
       }
     }
 
-    // 搜索模板
-    function searchTemplates() {
-      const searchTerm = templateSearch.value.toLowerCase();
-      
-      templateCards.forEach(card => {
-        const title = card.querySelector('h4').textContent.toLowerCase();
-        const description = card.querySelector('p').textContent.toLowerCase();
-        const category = card.querySelector('span').textContent.toLowerCase();
-        
-        if (title.includes(searchTerm) || description.includes(searchTerm) || category.includes(searchTerm)) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
-    }
 
-    // 加载更多模板
-    function loadMoreTemplates() {
-      // 模拟加载更多模板
-      loadMoreTemplatesBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
-      
-      setTimeout(() => {
-        loadMoreTemplatesBtn.innerHTML = '没有更多模板了';
-        loadMoreTemplatesBtn.disabled = true;
-        loadMoreTemplatesBtn.classList.add('opacity-50', 'cursor-not-allowed');
-      }, 1500);
-    }
-
-    // 使用模板
-    function useTemplate(templateId) {
-      const template = promptTemplates.find(t => t.id === templateId);
-      
-      if (template) {
-        document.getElementById('art-style').value = template.values.artStyle || '';
-        document.getElementById('quality').value = template.values.quality || '';
-        document.getElementById('subject').value = template.values.subject || '';
-        document.getElementById('action').value = template.values.action || '';
-        document.getElementById('environment').value = template.values.environment || '';
-        document.getElementById('dynamic-elements').value = template.values.dynamicElements || '';
-        document.getElementById('color-style').value = template.values.colorStyle || '';
-        document.getElementById('lighting').value = template.values.lighting || '';
-        
-        updatePromptPreview();
-      }
-    }
 
     // 事件监听器
     promptForm.addEventListener('input', updatePromptPreview);
@@ -1912,13 +1557,7 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
     
     randomPromptBtn.addEventListener('click', generateRandomPrompt);
     
-    generateImageBtn.addEventListener('click', generateImage);
-    
-    closeModalBtn.addEventListener('click', closeModal);
-    
-    downloadImageBtn.addEventListener('click', downloadImage);
-    
-    regenerateImageBtn.addEventListener('click', generateImage);
+
     
     savePromptBtn.addEventListener('click', savePrompt);
     
@@ -1932,9 +1571,6 @@ const loadStructuredExampleBtn = document.getElementById('load-structured-exampl
       creativityValue.textContent = creativityInput.value;
     });
     
-    templateSearch.addEventListener('input', searchTemplates);
-    
-    loadMoreTemplatesBtn.addEventListener('click', loadMoreTemplates);
     
     clearHistoryBtn.addEventListener('click', clearHistory);
     
