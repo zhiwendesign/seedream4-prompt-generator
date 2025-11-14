@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智文提示词生成器</title>
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#7b2cbf',
+            secondary: '#00bcd4',
+            dark: '#1a1a2e',
+            'dark-light': '#2d2d44',
+            light: '#f0f0f5',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+      .bg-gradient-primary {
+        background: linear-gradient(135deg, #7b2cbf 0%, #00bcd4 100%);
+      }
+      .bg-gradient-dark {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+      }
+      .transition-all-300 {
+        transition: all 300ms ease-in-out;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-dark min-h-screen text-light">
+  <!-- 顶部导航栏 -->
+  <header class="bg-dark bg-opacity-80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-800">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+          <i class="fa fa-magic text-white text-xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">智文提示词生成器</h1>
+      </div>
+      <div class="flex items-center space-x-4">
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-dark-light transition-all-300">
+          <i class="fa fa-moon-o text-secondary"></i>
+        </button>
+        <button id="save-prompt" class="px-4 py-2 bg-primary hover:bg-opacity-80 rounded-lg transition-all-300 flex items-center">
+          <i class="fa fa-save mr-2"></i> 保存提示词
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- 欢迎区域 -->
+    <section class="mb-12 text-center">
+      <h2 class="text-3xl font-bold mb-4 text-shadow-lg">释放你的创意潜能</h2>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        无论是专业设计师还是AI绘画爱好者，智文提示词生成器都能帮助你轻松创作出令人惊叹的AI艺术作品。
+      </p>
+    </section>
+
+    <!-- 主要功能区域 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- 左侧功能区 -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- 快速提示词生成 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold flex items-center">
+              <i class="fa fa-bolt text-secondary mr-2"></i>
+              快速提示词生成
+            </h3>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-lg font-medium mb-2">输入关键词（用逗号分隔）</label>
+              <input type="text" id="quick-keywords" placeholder="例如：猫咪, 花园, 阳光, 玩耍" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary text-lg">
+              <p class="text-sm text-gray-400 mt-1">输入几个关键词，我们将自动生成一段自然流畅的提示词</p>
+            </div>
+            
+            <button id="generate-quick-prompt" class="w-full py-3 bg-gradient-primary hover:opacity-90 rounded-lg transition-all-300 text-lg font-medium flex items-center justify-center">
+              <i class="fa fa-magic mr-2"></i> 快速生成
+            </button>
+          </div>
+        </section>
+
+        <!-- 结构化提示词输入区域 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold flex items-center">
+              <i class="fa fa-list-alt text-secondary mr-2"></i>
+              结构化提示词生成器
+            </h3>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-lg font-medium mb-2">风格描述</label>
+              <textarea id="structured-style" placeholder="描述整体风格，例如：二次元插画、日系动画风格、写实风格、卡通风格等" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-lg font-medium mb-2">场景约束</label>
+              <textarea id="structured-scene" placeholder="描述场景背景与环境要求，例如：晴朗的夏日、蓝天白云、清澈的湖水、都市街头等，包含气候、时间、自然元素等" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-lg font-medium mb-2">主体描述</label>
+              <textarea id="structured-subject" placeholder="主要人物或物体的详细描述，包括：性别、年龄、外貌特征、服饰、动作、表情等" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-lg font-medium mb-2">细节要求</label>
+              <textarea id="structured-details" placeholder="描述场景中的特定细节，如人物的姿势、表情、配饰，环境的细节表现" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-lg font-medium mb-2">色调要求</label>
+              <textarea id="structured-color" placeholder="画面整体的色调描述，例如：明亮清新、暖色调、冷色调、低饱和等" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-lg font-medium mb-2">氛围要求</label>
+              <textarea id="structured-mood" placeholder="描述整个画面的情感基调，例如：宁静、治愈、梦幻、浪漫、神秘、活力等" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-lg font-medium mb-2">风格补充</label>
+              <textarea id="structured-supplement" placeholder="如有特殊要求，可以进一步补充风格元素，例如：细腻的光影、简约设计、层次感强的背景、CG渲染质感等" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary h-20"></textarea>
+            </div>
+            
+            <div class="flex space-x-4 pt-2">
+              <button id="generate-structured-prompt" class="flex-1 py-3 bg-gradient-primary hover:opacity-90 rounded-lg transition-all-300 text-lg font-medium flex items-center justify-center">
+                <i class="fa fa-magic mr-2"></i> 生成结构化提示词
+              </button>
+              <button id="load-structured-example" class="flex-1 py-3 bg-secondary hover:opacity-90 rounded-lg transition-all-300 text-lg font-medium flex items-center justify-center">
+                <i class="fa fa-file-text-o mr-2"></i> 加载示例
+              </button>
+            </div>
+          </div>
+        </section>
+        
+        <!-- 结构化提示词生成器 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold flex items-center">
+              <i class="fa fa-wand-magic-sparkles text-secondary mr-2"></i>
+              结构化提示词生成器
+            </h3>
+            <div class="flex space-x-2">
+              <button id="reset-form" class="p-2 text-gray-400 hover:text-light hover:bg-dark-light rounded-lg transition-all-300">
+                <i class="fa fa-refresh"></i>
+              </button>
+              <button id="random-prompt" class="p-2 text-gray-400 hover:text-light hover:bg-dark-light rounded-lg transition-all-300">
+                <i class="fa fa-random"></i>
+              </button>
+            </div>
+          </div>
+          
+          <form id="prompt-form" class="space-y-6">
+            <!-- 风格定位 -->
+            <div>
+              <label class="block text-lg font-medium mb-2 flex items-center">
+                <i class="fa fa-paint-brush text-primary mr-2"></i>
+                风格定位
+              </label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">艺术风格</label>
+                  <select id="art-style" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">选择风格...</option>
+                    <option value="超写实 (hyperrealistic)">超写实 (hyperrealistic)</option>
+                    <option value="3D渲染, C4D, OC渲染 (Octane Render)">3D渲染, C4D, OC渲染</option>
+                    <option value="电影灯光 (cinematic lighting)">电影灯光</option>
+                    <option value="印象派 (Impressionism)">印象派</option>
+                    <option value="水彩画 (Watercolor)">水彩画</option>
+                    <option value="赛博朋克 (Cyberpunk)">赛博朋克</option>
+                    <option value="中国古风 (Chinese ancient style)">中国古风</option>
+                    <option value="动漫风格 (Anime style)">动漫风格</option>
+                    <option value="巴洛克风格 (Baroque)">巴洛克风格</option>
+                    <option value="极简主义 (Minimalism)">极简主义</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">画质描述</label>
+                  <select id="quality" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">选择画质...</option>
+                    <option value="细节丰富 (highly detailed)">细节丰富</option>
+                    <option value="超高清 (ultra-high definition)">超高清</option>
+                    <option value="8K分辨率 (8K resolution)">8K分辨率</option>
+                    <option value="照片级真实感 (photorealistic)">照片级真实感</option>
+                    <option value="锐利对焦 (sharp focus)">锐利对焦</option>
+                    <option value="景深效果 (depth of field)">景深效果</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 主体细节 -->
+            <div>
+              <label class="block text-lg font-medium mb-2 flex items-center">
+                <i class="fa fa-user text-primary mr-2"></i>
+                主体细节
+              </label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">主体描述</label>
+                  <input type="text" id="subject" placeholder="例如：一个穿着华丽服装的女孩，撑着遮阳伞..." class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">主体动作</label>
+                  <input type="text" id="action" placeholder="例如：走在林荫道上，微笑着看向远方..." class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+              </div>
+            </div>
+            
+            <!-- 环境与动态元素 -->
+            <div>
+              <label class="block text-lg font-medium mb-2 flex items-center">
+                <i class="fa fa-tree text-primary mr-2"></i>
+                环境与动态元素
+              </label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">场景环境</label>
+                  <input type="text" id="environment" placeholder="例如：阳光明媚的公园，周围有盛开的樱花树..." class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">动态元素</label>
+                  <input type="text" id="dynamic-elements" placeholder="例如：花瓣飘落，微风拂动头发..." class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+              </div>
+            </div>
+            
+            <!-- 色彩效果 -->
+            <div>
+              <label class="block text-lg font-medium mb-2 flex items-center">
+                <i class="fa fa-palette text-primary mr-2"></i>
+                色彩效果
+              </label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">色彩风格</label>
+                  <select id="color-style" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">选择色彩风格...</option>
+                    <option value="温暖的光线 (warm light)">温暖的光线</option>
+                    <option value="冷色调 (cool色调)">冷色调</option>
+                    <option value="高对比度 (high contrast)">高对比度</option>
+                    <option value="柔和色调 (soft colors)">柔和色调</option>
+                    <option value="鲜艳色彩 (vibrant colors)">鲜艳色彩</option>
+                    <option value="黑白 (black and white)">黑白</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">光影效果</label>
+                  <select id="lighting" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">选择光影效果...</option>
+                    <option value="自然光 (natural light)">自然光</option>
+                    <option value="工作室灯光 (studio lighting)">工作室灯光</option>
+                    <option value="黄金时刻 (golden hour)">黄金时刻</option>
+                    <option value="逆光 (backlight)">逆光</option>
+                    <option value="侧光 (side light)">侧光</option>
+                    <option value="柔光 (soft light)">柔光</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 技术参数 -->
+            <div>
+              <label class="block text-lg font-medium mb-2 flex items-center">
+                <i class="fa fa-cog text-primary mr-2"></i>
+                技术参数
+              </label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">分辨率</label>
+                  <select id="resolution" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="1024x1024">1024x1024</option>
+                    <option value="1024x1536">1024x1536</option>
+                    <option value="1536x1024">1536x1024</option>
+                    <option value="2048x2048">2048x2048 (4K)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">生成步数</label>
+                  <input type="range" id="steps" min="10" max="100" value="30" class="w-full accent-primary">
+                  <div class="flex justify-between text-xs text-gray-400">
+                    <span>10</span>
+                    <span id="steps-value">30</span>
+                    <span>100</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-1">创意度</label>
+                  <input type="range" id="creativity" min="0.1" max="2" step="0.1" value="1" class="w-full accent-primary">
+                  <div class="flex justify-between text-xs text-gray-400">
+                    <span>保守</span>
+                    <span id="creativity-value">1.0</span>
+                    <span>创意</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="pt-4">
+              <button type="submit" class="w-full py-3 bg-gradient-primary hover:opacity-90 rounded-lg transition-all-300 text-lg font-medium flex items-center justify-center">
+                <i class="fa fa-magic mr-2"></i> 生成提示词
+              </button>
+            </div>
+          </form>
+        </section>
+        
+        <!-- 提示词模板库 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold flex items-center">
+              <i class="fa fa-bookmark text-secondary mr-2"></i>
+              提示词模板库
+            </h3>
+            <div class="relative">
+              <input type="text" id="template-search" placeholder="搜索模板..." class="bg-dark-light border border-gray-700 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+              <i class="fa fa-search absolute left-3 top-3 text-gray-400"></i>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 模板卡片 -->
+            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-medium">超写实人像</h4>
+                <span class="text-xs bg-primary bg-opacity-20 text-primary px-2 py-1 rounded">人像</span>
+              </div>
+              <p class="text-sm text-gray-300 mb-3 line-clamp-2">一个年轻女性的超写实肖像，柔和的自然光，8K分辨率，细腻的皮肤纹理，电影灯光效果</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">ID: TPL-001</span>
+                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
+              </div>
+            </div>
+            
+            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-medium">赛博朋克城市</h4>
+                <span class="text-xs bg-secondary bg-opacity-20 text-secondary px-2 py-1 rounded">场景</span>
+              </div>
+              <p class="text-sm text-gray-300 mb-3 line-clamp-2">未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道，全息广告牌，高楼大厦，8K分辨率，电影级渲染</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">ID: TPL-002</span>
+                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
+              </div>
+            </div>
+            
+            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-medium">中国古风山水</h4>
+                <span class="text-xs bg-green-500 bg-opacity-20 text-green-500 px-2 py-1 rounded">艺术</span>
+              </div>
+              <p class="text-sm text-gray-300 mb-3 line-clamp-2">中国传统山水画风格，水墨丹青，远山近水，古松奇石，茅屋小桥，云雾缭绕，8K分辨率，超高清细节</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">ID: TPL-003</span>
+                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
+              </div>
+            </div>
+            
+            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-medium">动漫风格角色</h4>
+                <span class="text-xs bg-pink-500 bg-opacity-20 text-pink-500 px-2 py-1 rounded">动漫</span>
+              </div>
+              <p class="text-sm text-gray-300 mb-3 line-clamp-2">日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服，背景是樱花盛开的校园，高清细节，动态光影</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">ID: TPL-004</span>
+                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
+              </div>
+            </div>
+            
+            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-medium">3D渲染产品</h4>
+                <span class="text-xs bg-blue-500 bg-opacity-20 text-blue-500 px-2 py-1 rounded">产品</span>
+              </div>
+              <p class="text-sm text-gray-300 mb-3 line-clamp-2">现代简约风格的智能手机，透明材质，悬浮在半空中，周围有彩色光晕，工作室灯光，8K分辨率，C4D渲染</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">ID: TPL-005</span>
+                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
+              </div>
+            </div>
+            
+            <div class="template-card bg-dark-light rounded-lg p-4 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-medium">奇幻生物</h4>
+                <span class="text-xs bg-purple-500 bg-opacity-20 text-purple-500 px-2 py-1 rounded">奇幻</span>
+              </div>
+              <p class="text-sm text-gray-300 mb-3 line-clamp-2">神话中的独角兽，雪白的毛发，彩虹色的角，站在魔法森林中，月光照耀，周围有发光的植物和小精灵，超写实风格</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-400">ID: TPL-006</span>
+                <button class="text-xs text-secondary hover:text-primary transition-all-300">使用模板</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 text-center">
+            <button id="load-more-templates" class="px-4 py-2 border border-gray-700 rounded-lg hover:border-primary hover:text-primary transition-all-300">
+              加载更多模板
+            </button>
+          </div>
+        </section>
+      </div>
+      
+      <!-- 右侧预览区 -->
+      <div class="lg:col-span-1 space-y-8">
+        <!-- 提示词预览 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fa fa-eye text-secondary mr-2"></i>
+            提示词预览
+          </h3>
+          
+          <div class="mb-4">
+            <!-- 提示词显示区域 -->
+            <textarea id="prompt-preview" class="w-full h-40 bg-dark-light border border-gray-700 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-primary resize-none" placeholder="你的提示词将显示在这里..." readonly></textarea>
+            <!-- 提示词预览字段后面：按钮区域 -->
+            <div class="flex justify-end mt-2 space-x-2">
+              <button id="copy-prompt" class="px-4 py-2 bg-dark-light border border-gray-700 text-gray-400 hover:text-primary hover:bg-dark-light/70 rounded-lg transition-all-300 flex items-center">
+                <i class="fa fa-copy mr-2"></i> 复制
+              </button>
+              <button id="edit-prompt" class="px-4 py-2 bg-dark-light border border-gray-700 text-gray-400 hover:text-primary hover:bg-dark-light/70 rounded-lg transition-all-300 flex items-center">
+                <i class="fa fa-pencil mr-2"></i> 编辑
+              </button>
+            </div>
+          </div>
+          
+          <div id="copy-notification" class="hidden absolute top-2 right-2 bg-green-500 text-white px-3 py-1 rounded-lg text-sm">
+            已复制到剪贴板
+          </div>
+          
+          <div class="bg-dark-light rounded-lg p-4 border border-gray-700">
+            <h4 class="font-medium mb-2 flex items-center">
+              <i class="fa fa-lightbulb-o text-yellow-500 mr-2"></i>
+              提示词优化建议
+            </h4>
+            <ul id="prompt-suggestions" class="text-sm text-gray-300 space-y-2">
+              <li class="flex items-start">
+                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>添加更多具体细节，如材质、纹理和表面处理</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>考虑添加艺术家参考，如"风格类似于宫崎骏"</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>增加构图描述，如"低角度拍摄"或"鸟瞰视角"</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+        
+        <!-- 效果预览 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fa fa-image text-secondary mr-2"></i>
+            效果预览
+          </h3>
+          
+          <div class="space-y-4">
+            <div class="bg-dark-light rounded-lg overflow-hidden">
+              <img src="https://p26-doubao-search-sign.byteimg.com/labis/image/5ed22fb401df6cd3e3d6d73f9fc90e20~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=vR92arDzYDDkoIROghlh6conYO4%3D" alt="中国古风示例" class="w-full h-48 object-cover">
+              <div class="p-3">
+                <h4 class="font-medium text-sm">中国古风山水</h4>
+                <p class="text-xs text-gray-400 mt-1">中国传统山水画风格，水墨丹青，远山近水，古松奇石</p>
+              </div>
+            </div>
+            
+            <div class="bg-dark-light rounded-lg overflow-hidden">
+              <img src="https://p11-doubao-search-sign.byteimg.com/labis/image/e32fbdb124eb8ed21e5988da8953106e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=6fNfBkGeunEntWy%2FKvn%2B5ZVosyE%3D" alt="赛博朋克示例" class="w-full h-48 object-cover">
+              <div class="p-3">
+                <h4 class="font-medium text-sm">赛博朋克风格</h4>
+                <p class="text-xs text-gray-400 mt-1">未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道</p>
+              </div>
+            </div>
+            
+            <div class="bg-dark-light rounded-lg overflow-hidden">
+              <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-6w9my0ksvp/472404b78954468f90bd79f32f4ec3c8~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=lHxrUVf62vM4FbV%2BO%2FHz%2FsOYpM8%3D" alt="动漫风格示例" class="w-full h-48 object-cover">
+              <div class="p-3">
+                <h4 class="font-medium text-sm">动漫风格角色</h4>
+                <p class="text-xs text-gray-400 mt-1">日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 text-center">
+            <button id="generate-image" class="px-4 py-2 bg-secondary hover:bg-opacity-80 rounded-lg transition-all-300 flex items-center justify-center mx-auto">
+              <i class="fa fa-camera mr-2"></i> 生成图像
+            </button>
+          </div>
+        </section>
+        
+        <!-- 历史记录 -->
+        <section class="bg-dark bg-opacity-60 backdrop-blur-md rounded-xl p-6 border border-gray-800 shadow-lg">
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fa fa-history text-secondary mr-2"></i>
+            历史记录
+          </h3>
+          
+          <div id="history-list" class="space-y-3">
+            <div class="bg-dark-light rounded-lg p-3 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start">
+                <h4 class="font-medium text-sm">超写实人像</h4>
+                <span class="text-xs text-gray-400">今天 14:30</span>
+              </div>
+              <p class="text-xs text-gray-300 mt-1 line-clamp-1">一个年轻女性的超写实肖像，柔和的自然光，8K分辨率...</p>
+            </div>
+            
+            <div class="bg-dark-light rounded-lg p-3 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start">
+                <h4 class="font-medium text-sm">赛博朋克城市</h4>
+                <span class="text-xs text-gray-400">今天 12:15</span>
+              </div>
+              <p class="text-xs text-gray-300 mt-1 line-clamp-1">未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道...</p>
+            </div>
+            
+            <div class="bg-dark-light rounded-lg p-3 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer">
+              <div class="flex justify-between items-start">
+                <h4 class="font-medium text-sm">中国古风山水</h4>
+                <span class="text-xs text-gray-400">昨天 20:45</span>
+              </div>
+              <p class="text-xs text-gray-300 mt-1 line-clamp-1">中国传统山水画风格，水墨丹青，远山近水，古松奇石...</p>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-center">
+            <button id="clear-history" class="text-xs text-gray-400 hover:text-red-500 transition-all-300">
+              清除历史记录
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部信息 -->
+  <footer class="bg-dark bg-opacity-80 backdrop-blur-md border-t border-gray-800 py-6 mt-12">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <i class="fa fa-magic text-white text-sm"></i>
+            </div>
+            <h2 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-primary">智文提示词生成器</h2>
+          </div>
+          <p class="text-gray-400 text-sm mt-2">释放你的创意潜能，轻松创作令人惊叹的AI艺术作品</p>
+        </div>
+        
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-primary transition-all-300">
+            <i class="fa fa-github text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-primary transition-all-300">
+            <i class="fa fa-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-primary transition-all-300">
+            <i class="fa fa-instagram text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-primary transition-all-300">
+            <i class="fa fa-discord text-xl"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-500 text-sm">
+        <p>&copy; 2025 智文提示词生成器 | 仅供学习和研究使用</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 生成图像模态框 -->
+  <div id="generate-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden">
+    <div class="bg-dark-light rounded-xl p-6 max-w-lg w-full mx-4 border border-gray-700">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold">生成图像</h3>
+        <button id="close-modal" class="text-gray-400 hover:text-light transition-all-300">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div id="generation-progress" class="mb-6">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm">正在生成图像...</span>
+          <span id="progress-percentage" class="text-sm text-primary">0%</span>
+        </div>
+        <div class="w-full bg-dark rounded-full h-2.5">
+          <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div id="generation-result" class="hidden">
+        <div class="mb-4">
+          <label class="block text-sm text-gray-400 mb-2">生成结果</label>
+          <div class="bg-dark rounded-lg overflow-hidden">
+            <img id="generated-image" src="" alt="生成的图像" class="w-full h-auto">
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <button id="download-image" class="px-4 py-2 bg-secondary hover:bg-opacity-80 rounded-lg transition-all-300 flex items-center justify-center">
+            <i class="fa fa-download mr-2"></i> 下载图像
+          </button>
+          <button id="regenerate-image" class="px-4 py-2 border border-gray-700 hover:border-primary hover:text-primary transition-all-300 flex items-center justify-center">
+            <i class="fa fa-refresh mr-2"></i> 重新生成
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM元素
+    const promptForm = document.getElementById('prompt-form');
+    const promptPreview = document.getElementById('prompt-preview');
+    const copyPromptBtn = document.getElementById('copy-prompt');
+    const copyNotification = document.getElementById('copy-notification');
+    const editPromptBtn = document.getElementById('edit-prompt');
+    const resetFormBtn = document.getElementById('reset-form');
+    const randomPromptBtn = document.getElementById('random-prompt');
+    const generateImageBtn = document.getElementById('generate-image');
+    const generateModal = document.getElementById('generate-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercentage = document.getElementById('progress-percentage');
+    const generationProgress = document.getElementById('generation-progress');
+    const generationResult = document.getElementById('generation-result');
+    const generatedImage = document.getElementById('generated-image');
+    const downloadImageBtn = document.getElementById('download-image');
+    const regenerateImageBtn = document.getElementById('regenerate-image');
+    const savePromptBtn = document.getElementById('save-prompt');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const stepsInput = document.getElementById('steps');
+    const stepsValue = document.getElementById('steps-value');
+    const creativityInput = document.getElementById('creativity');
+    const creativityValue = document.getElementById('creativity-value');
+    const templateSearch = document.getElementById('template-search');
+    const templateCards = document.querySelectorAll('.template-card');
+    const loadMoreTemplatesBtn = document.getElementById('load-more-templates');
+    const historyList = document.getElementById('history-list');
+    const clearHistoryBtn = document.getElementById('clear-history');
+    const promptSuggestions = document.getElementById('prompt-suggestions');
+    // 新增DOM元素 - 快速提示词生成
+    const quickKeywordsInput = document.getElementById('quick-keywords');
+const generateQuickPromptBtn = document.getElementById('generate-quick-prompt');
+// 结构化提示词输入区域元素
+const structuredStyleInput = document.getElementById('structured-style');
+const structuredSceneInput = document.getElementById('structured-scene');
+const structuredSubjectInput = document.getElementById('structured-subject');
+const structuredDetailsInput = document.getElementById('structured-details');
+const structuredColorInput = document.getElementById('structured-color');
+const structuredMoodInput = document.getElementById('structured-mood');
+const structuredSupplementInput = document.getElementById('structured-supplement');
+const generateStructuredPromptBtn = document.getElementById('generate-structured-prompt');
+const loadStructuredExampleBtn = document.getElementById('load-structured-example');
+
+    // 提示词模板数据
+    const promptTemplates = [
+      {
+        id: 'TPL-001',
+        title: '超写实人像',
+        category: '人像',
+        description: '一个年轻女性的超写实肖像，柔和的自然光，8K分辨率，细腻的皮肤纹理，电影灯光效果',
+        values: {
+          artStyle: '超写实 (hyperrealistic)',
+          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
+          subject: '一个年轻女性的超写实肖像',
+          environment: '柔和的自然光',
+          colorStyle: '自然色彩 (natural colors)',
+          lighting: '电影灯光 (cinematic lighting)'
+        }
+      },
+      {
+        id: 'TPL-002',
+        title: '赛博朋克城市',
+        category: '场景',
+        description: '未来主义赛博朋克城市夜景，霓虹灯闪烁，雨水街道，全息广告牌，高楼大厦，8K分辨率，电影级渲染',
+        values: {
+          artStyle: '赛博朋克 (Cyberpunk)',
+          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
+          subject: '未来主义赛博朋克城市夜景',
+          environment: '霓虹灯闪烁，雨水街道，全息广告牌，高楼大厦',
+          colorStyle: '高对比度 (high contrast), 鲜艳色彩 (vibrant colors)',
+          lighting: '霓虹灯 (neon lights)'
+        }
+      },
+      {
+        id: 'TPL-003',
+        title: '中国古风山水',
+        category: '艺术',
+        description: '中国传统山水画风格，水墨丹青，远山近水，古松奇石，茅屋小桥，云雾缭绕，8K分辨率，超高清细节',
+        values: {
+          artStyle: '中国古风 (Chinese ancient style)',
+          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
+          subject: '中国传统山水画',
+          environment: '远山近水，古松奇石，茅屋小桥，云雾缭绕',
+          colorStyle: '水墨丹青 (ink wash painting)',
+          lighting: '自然光 (natural light)'
+        }
+      },
+      {
+        id: 'TPL-004',
+        title: '动漫风格角色',
+        category: '动漫',
+        description: '日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服，背景是樱花盛开的校园，高清细节，动态光影',
+        values: {
+          artStyle: '动漫风格 (Anime style)',
+          quality: '细节丰富 (highly detailed), 高清 (high definition)',
+          subject: '日本动漫风格的女性角色，粉色长发，绿色眼睛，校园制服',
+          environment: '樱花盛开的校园',
+          colorStyle: '鲜艳色彩 (vibrant colors)',
+          lighting: '动态光影 (dynamic lighting)'
+        }
+      },
+      {
+        id: 'TPL-005',
+        title: '3D渲染产品',
+        category: '产品',
+        description: '现代简约风格的智能手机，透明材质，悬浮在半空中，周围有彩色光晕，工作室灯光，8K分辨率，C4D渲染',
+        values: {
+          artStyle: '3D渲染, C4D, OC渲染 (Octane Render)',
+          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
+          subject: '现代简约风格的智能手机，透明材质，悬浮在半空中',
+          environment: '周围有彩色光晕',
+          colorStyle: '高对比度 (high contrast)',
+          lighting: '工作室灯光 (studio lighting)'
+        }
+      },
+      {
+        id: 'TPL-006',
+        title: '奇幻生物',
+        category: '奇幻',
+        description: '神话中的独角兽，雪白的毛发，彩虹色的角，站在魔法森林中，月光照耀，周围有发光的植物和小精灵，超写实风格',
+        values: {
+          artStyle: '超写实 (hyperrealistic), 奇幻风格 (fantasy style)',
+          quality: '细节丰富 (highly detailed), 8K分辨率 (8K resolution)',
+          subject: '神话中的独角兽，雪白的毛发，彩虹色的角',
+          environment: '魔法森林中，周围有发光的植物和小精灵',
+          colorStyle: '鲜艳色彩 (vibrant colors)',
+          lighting: '月光 (moonlight)'
+        }
+      }
+    ];
+
+    // 随机提示词数据
+    const randomSubjects = [
+      '一个穿着未来主义服装的宇航员',
+      '一只正在飞翔的机械翅膀的龙',
+      '一个漂浮在太空中的水晶城堡',
+      '一位戴着传统面具的神秘人物',
+      '一片充满发光植物的梦幻森林',
+      '一辆复古风格的未来主义汽车',
+      '一位坐在云端上的魔法师',
+      '一座建在悬崖边的玻璃房子'
+    ];
+
+    const randomEnvironments = [
+      '夕阳下的沙漠',
+      '雨后的城市街道',
+      '星空下的山顶',
+      '海底深处的珊瑚礁',
+      '云雾缭绕的山谷',
+      '未来主义的都市夜景',
+      '古老的神秘遗迹',
+      '充满生机的外星星球'
+    ];
+
+    const randomActions = [
+      '正在探索未知的领域',
+      '凝视着远方的地平线',
+      '与神秘生物互动',
+      '施展强大的魔法',
+      '驾驶着未来科技的交通工具',
+      '在古老的图书馆中寻找秘密',
+      '在战场上英勇战斗',
+      '在宁静的湖边沉思'
+    ];
+
+    const randomColorStyles = [
+      '温暖的光线 (warm light)',
+      '冷色调 (cool色调)',
+      '高对比度 (high contrast)',
+      '柔和色调 (soft colors)',
+      '鲜艳色彩 (vibrant colors)',
+      '黑白 (black and white)'
+    ];
+
+    const randomLighting = [
+      '自然光 (natural light)',
+      '工作室灯光 (studio lighting)',
+      '黄金时刻 (golden hour)',
+      '逆光 (backlight)',
+      '侧光 (side light)',
+      '柔光 (soft light)'
+    ];
+
+    const randomArtStyles = [
+      '超写实 (hyperrealistic)',
+      '3D渲染, C4D, OC渲染 (Octane Render)',
+      '电影灯光 (cinematic lighting)',
+      '印象派 (Impressionism)',
+      '水彩画 (Watercolor)',
+      '赛博朋克 (Cyberpunk)',
+      '中国古风 (Chinese ancient style)',
+      '动漫风格 (Anime style)'
+    ];
+
+    // 结构化格式相关的数据集合
+    const structuredFormatData = {
+      // 风格描述集合
+      styleDescriptions: [
+        '一幅风格清新的二次元插画，日系动画风格',
+        '超写实 (hyperrealistic) 油画风格',
+        '中国传统水墨风格，意境深远',
+        '3D渲染 (3D rendering) 高品质CG作品',
+        '印象派 (Impressionism) 油画风格',
+        '卡通风格 (cartoon style)，色彩鲜艳',
+        '赛博朋克 (cyberpunk) 未来主义风格',
+        '极简主义 (minimalism) 设计风格'
+      ],
+      
+      // 场景约束集合
+      sceneConstraints: [
+        '晴朗的夏日，蓝天白云，湖水清澈，周围绿树环绕',
+        '宁静的夜晚，星光闪烁，月光皎洁',
+        '繁华的都市街头，霓虹灯闪烁，人流如织',
+        '神秘的魔法森林，参天古树，迷雾缭绕',
+        '雪山之巅，白雪皑皑，阳光照射下闪闪发光',
+        '海底世界，珊瑚礁丛，五彩斑斓的鱼群',
+        '未来主义都市，高耸入云的建筑，飞行汽车',
+        '古老的东方庭院，竹林环绕，小溪流水'
+      ],
+      
+      // 主体描述集合（模板）
+      subjectTemplates: [
+        '一位身着{clothing}的{gender}，{action}，{expression}',
+        '{character}，{action}，{expression}',
+        '{animal}，{action}，{details}'
+      ],
+      
+      // 细节要求集合
+      detailRequirements: [
+        '细节刻画入微，纹理清晰可见',
+        '周围环境细节丰富，包括{elements}',
+        '光影效果处理精细，明暗对比鲜明',
+        '色彩过渡自然，层次感强',
+        '{subject}的表情栩栩如生，眼神充满{emotion}'
+      ],
+      
+      // 色调要求集合
+      colorRequirements: [
+        '明亮清新，带有轻松、治愈的感觉',
+        '暖色调为主，营造温馨舒适的氛围',
+        '冷色调为主，传递神秘深邃的感觉',
+        '低饱和度，呈现复古质感',
+        '色彩鲜艳夺目，充满活力',
+        '柔和的中性色调，简约优雅'
+      ],
+      
+      // 氛围要求集合
+      atmosphereRequirements: [
+        '营造出宁静、治愈的氛围，传递悠闲惬意的感觉',
+        '充满神秘、梦幻的气息，引人无限遐想',
+        '紧张刺激，动感十足',
+        '温馨浪漫，甜蜜幸福',
+        '庄严肃穆，令人敬畏',
+        '充满活力，积极向上'
+      ],
+      
+      // 风格补充集合
+      styleSupplements: [
+        '细腻的光影与自然的倒影相得益彰',
+        '简约设计，干净利落',
+        '层次感强的背景，空间感十足',
+        'CG渲染质感，高品质呈现',
+        '笔触流畅，富有艺术感',
+        '构图巧妙，视角独特'
+      ]
+    };
+    
+    // 生成自然语言提示词 - 兼容结构化格式
+    function generateNaturalPrompt(keywords) {
+      // 如果关键词为空，返回默认提示
+      if (!keywords || keywords.trim() === '') {
+        return '请输入关键词来生成提示词';
+      }
+      
+      // 分割关键词
+      const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k !== '');
+      if (keywordList.length === 0) {
+        return '请输入有效的关键词';
+      }
+      
+      // 根据用户设置决定是否使用结构化格式（默认为使用）
+      const useStructuredFormat = true; // 后续可以做成可配置选项
+      
+      if (useStructuredFormat) {
+        // 使用结构化格式生成提示词
+        return generateStructuredPromptFromKeywords(keywordList);
+      } else {
+          // 根据关键词数量选择传统生成模式
+          if (keywordList.length === 1) {
+            return generateSingleKeywordPrompt(keywordList[0]);
+          } else {
+            return generateMultiKeywordPrompt(keywordList);
+          }
+        }
+      }
+      
+      // 根据关键词生成结构化格式的提示词
+      function generateStructuredPromptFromKeywords(keywords) {
+        // 为七个部分生成内容
+        let styleDesc = '';
+        let sceneConstraint = '';
+        let mainSubject = '';
+        let details = '';
+        let colorTone = '';
+        let atmosphere = '';
+        let styleSuppl = '';
+        
+        // 风格关键词集合，用于识别用户输入的风格描述
+        const styleKeywords = ['风格', '画', '艺术', '插画', '渲染', '动画', '漫画', '写实', '抽象', '水墨', '油画', '水彩', '素描', '卡通', '赛博朋克', '蒸汽波', '极简', '古风', '印象派', '超现实', '二次元', '像素', '手绘', '3D', '科幻', '复古', '未来', '简约', '奢华', '哥特风', '暗黑', '清新', '唯美', '写实主义', '抽象主义', '波普艺术', '装置艺术', '数字艺术', '后现代', '新古典', '文艺复兴', '巴洛克', '洛可可', '表现主义', '野兽派', '立体主义', '达达主义', '超现实主义', '抽象表现主义', '极简主义', '波普艺术', '欧普艺术', '观念艺术', '大地艺术', '影像艺术', '互动艺术', '网络艺术', '生物艺术', '算法艺术', '生成艺术'];
+        const sceneKeywords = ['场景', '环境', '背景', '地点', '风景', '室内', '室外'];
+        const colorKeywords = ['颜色', '色彩', '色调', '明亮', '鲜艳', '柔和', '暗淡'];
+        const atmosphereKeywords = ['氛围', '气氛', '情感', '感觉', '心情', '温馨', '神秘'];
+        
+        // 如果有关键词，智能分配到各个字段
+        if (keywords && keywords.length > 0) {
+          // 1. 优先处理所有风格相关关键词，确保用户输入的风格被严格保留
+          let styleKeywordsFound = [];
+          
+          // 遍历所有关键词查找风格描述
+          for (let i = 0; i < keywords.length; i++) {
+            const keyword = keywords[i].toLowerCase();
+            const originalKeyword = keywords[i];
+            
+            // 检查是否包含风格关键词
+            if (styleKeywords.some(k => keyword.includes(k))) {
+              styleKeywordsFound.push(originalKeyword);
+            }
+          }
+          
+          // 如果找到风格关键词，严格保留所有用户输入的风格
+          let hasStyleKeyword = false;
+          if (styleKeywordsFound.length > 0) {
+            styleDesc = styleKeywordsFound.join('，');
+            hasStyleKeyword = true;
+          }
+          
+          // 过滤掉无意义的关键词
+          const meaninglessWords = ['一个', '的', '这', '那', '和', '与', '了', '是', '在', '有', '地'];
+          
+          // 2. 确定主要主体，排除已分配为风格的关键词和无意义的词
+          const nonStyleKeywords = keywords
+            .filter(k => !styleKeywords.some(sk => k.toLowerCase().includes(sk)))
+            .filter(k => !meaninglessWords.includes(k.toLowerCase()));
+          if (nonStyleKeywords.length > 0) {
+            mainSubject = nonStyleKeywords[0];
+          }
+          
+          // 处理剩余的关键词，尝试智能分类
+          for (let i = 0; i < keywords.length; i++) {
+            const keyword = keywords[i].toLowerCase();
+            let assigned = false;
+            
+            // 跳过已分配为风格的关键词
+            if (styleKeywords.some(k => keyword.includes(k))) {
+              assigned = true;
+            }
+            // 跳过已分配为主体的关键词（第一个非风格关键词）
+            else if (!hasStyleKeyword && i === 0) {
+              assigned = true;
+            }
+            // 跳过已分配为主体的关键词（如果有风格关键词）
+            else if (hasStyleKeyword && i === 0 && !styleKeywords.some(k => keywords[i].toLowerCase().includes(k))) {
+              assigned = true;
+            }
+            
+            // 检查是否匹配场景关键词
+            if (!assigned && sceneKeywords.some(k => keyword.includes(k))) {
+              sceneConstraint = keyword;
+              assigned = true;
+            }
+            // 检查是否匹配颜色关键词
+            else if (!assigned && colorKeywords.some(k => keyword.includes(k))) {
+              colorTone = keyword;
+              assigned = true;
+            }
+            // 检查是否匹配氛围关键词
+            else if (!assigned && atmosphereKeywords.some(k => keyword.includes(k))) {
+              atmosphere = keyword;
+              assigned = true;
+            }
+          }
+          
+          // 如果有多个关键词，生成细节描述
+          if (keywords.length > 1) {
+            let detailTemplate = getRandomItem(structuredFormatData.detailRequirements);
+            // 收集未被分配到特定字段的关键词作为元素
+            const unassignedKeywords = keywords.slice(1).filter((keyword, index) => {
+              const i = index + 1; // 调整索引以匹配原始keywords数组
+              const lowerKeyword = keyword.toLowerCase();
+              // 检查是否已被分配到某个特定字段
+              const isAssigned = 
+                (i >= 1 && styleKeywords.some(k => lowerKeyword.includes(k))) ||
+                (i >= 1 && sceneKeywords.some(k => lowerKeyword.includes(k))) ||
+                (i >= 1 && colorKeywords.some(k => lowerKeyword.includes(k))) ||
+                (i >= 1 && atmosphereKeywords.some(k => lowerKeyword.includes(k)));
+              return !isAssigned;
+            });
+            
+            // 替换模板中的占位符
+            detailTemplate = detailTemplate.replace('{elements}', unassignedKeywords.length > 0 ? unassignedKeywords.join('、') : getRandomItem(['自然元素', '环境细节']));
+            detailTemplate = detailTemplate.replace('{subject}', mainSubject);
+            detailTemplate = detailTemplate.replace('{emotion}', getRandomItem(['情感', '故事', '生命力', '活力']));
+            
+            details = detailTemplate;
+          }
+        }
+        
+        // 使用结构化提示词生成函数（该函数会自动补充缺失的字段）
+        return structuredPromptGenerator(
+          styleDesc,
+          sceneConstraint,
+          mainSubject,
+          details,
+          colorTone,
+          atmosphere,
+          styleSuppl
+        );
+      }
+    
+    // 生成单个关键词的提示词 - 优化版
+    function generateSingleKeywordPrompt(keyword) {
+      // 扩展艺术风格库
+      const artStyles = [
+        '超写实 (hyperrealistic)', '3D渲染 (3D rendering)', '电影灯光 (cinematic lighting)', 
+        '印象派 (Impressionism)', '水彩画 (Watercolor)', '中国古风 (Chinese ancient style)',
+        '油画风格 (oil painting)', '素描 (sketch)', '卡通风格 (cartoon style)',
+        '蒸汽波 (vaporwave)', '赛博朋克 (cyberpunk)', '极简主义 (minimalism)'
+      ];
+      
+      // 扩展质量描述库
+      const qualities = [
+        '细节丰富 (highly detailed)', '超高清 (ultra-high definition)', '8K分辨率 (8K resolution)',
+        '专业级品质 (professional quality)', '逼真渲染 (realistic rendering)', 
+        '精细纹理 (fine texture)', '锐利聚焦 (sharp focus)'
+      ];
+      
+      // 扩展视角描述
+      const perspectives = [
+        '特写镜头', '全身像', '全景视图', '俯视角度', '仰视角度', 
+        '侧面视角', '45度角', '正面视图', '微距拍摄', '长焦拍摄'
+      ];
+      
+      // 扩展光线描述
+      const lightingTypes = [
+        '自然光线', '柔光照明', '侧光', '背光', '戏剧性照明',
+        '黄昏光线', '晨光', '室内灯光', '霓虹灯', '月光'
+      ];
+      
+      // 扩展细节增强描述
+      const detailEnhancers = [
+        '光影效果细腻', '构图精美', '色彩鲜明', '细节刻画入微',
+        '质感表现出色', '层次感强', '空间感好', '动态捕捉精准'
+      ];
+      
+      // 扩展场景描述模板，增加多样性
+      const templates = [
+        `一个精美的${keyword}，${getRandomItem(perspectives)}，${getRandomItem(qualities)}，${getRandomItem(artStyles)}，${getRandomItem(lightingTypes)}`,
+        `${getRandomItem(perspectives)}下的${keyword}，${getRandomItem(qualities)}，${getRandomItem(artStyles)}，${getRandomItem(detailEnhancers)}`,
+        `栩栩如生的${keyword}，${getRandomItem(qualities)}，${getRandomItem(artStyles)}，${getRandomItem(lightingTypes)}，${getRandomItem(detailEnhancers)}`,
+        `高质量的${keyword}图像，${getRandomItem(perspectives)}，${getRandomItem(artStyles)}，${getRandomItem(lightingTypes)}`,
+        `精雕细琢的${keyword}，${getRandomItem(qualities)}，${getRandomItem(artStyles)}，${getRandomItem(detailEnhancers)}`,
+        `以${getRandomItem(artStyles)}呈现的${keyword}，${getRandomItem(perspectives)}，${getRandomItem(qualities)}`,
+        `在${getRandomItem(lightingTypes)}下的${keyword}，${getRandomItem(artStyles)}，${getRandomItem(qualities)}`,
+        `充满艺术感的${keyword}，${getRandomItem(artStyles)}，${getRandomItem(perspectives)}，${getRandomItem(detailEnhancers)}`
+      ];
+      
+      // 随机选择一个模板作为基础
+      let prompt = getRandomItem(templates);
+      
+      // 30%概率添加额外的氛围描述
+      if (Math.random() > 0.7) {
+        const atmospheres = [
+          '氛围神秘', '氛围宁静', '氛围温馨', '氛围紧张',
+          '充满活力', '情感丰富', '意境深远', '令人印象深刻'
+        ];
+        prompt += '，' + getRandomItem(atmospheres);
+      }
+      
+      return prompt;
+    }
+    
+    // 生成多个关键词的提示词 - 优化版
+    function generateMultiKeywordPrompt(keywords) {
+      // 扩展场景模板库
+      const sceneTemplates = [
+        `一幅描绘${keywords[0]}的精美画面`,
+        `一个令人印象深刻的${keywords[0]}场景`,
+        `以${keywords[0]}为主题的艺术作品`,
+        `${keywords[0]}的生动呈现`,
+        `展现${keywords[0]}魅力的视觉作品`
+      ];
+      
+      // 根据关键词数量选择合适的模板
+      let prompt = getRandomItem(sceneTemplates);
+      
+      // 智能连接词库，根据上下文选择更合适的连接词
+      const connectorSets = {
+        location: ['位于', '在', '坐落在', '处于'],
+        atmosphere: ['充满', '环绕着', '弥漫着', '沐浴在'],
+        decoration: ['点缀着', '装饰着', '衬托着', '伴随着'],
+        action: ['正在', '进行着', '展现着', '演绎着'],
+        color: ['呈现出', '渲染着', '蕴含着', '融合了']
+      };
+      
+      // 根据关键词数量和位置选择连接方式
+      if (keywords.length > 1) {
+        // 为第二个关键词添加连接
+        const secondConnectorType = getRandomItem(Object.keys(connectorSets));
+        const secondConnector = getRandomItem(connectorSets[secondConnectorType]);
+        prompt += `，${secondConnector}${keywords[1]}`;
+        
+        // 为剩余关键词添加连接
+        for (let i = 2; i < keywords.length; i++) {
+          // 根据位置选择不同的连接策略
+          if (i === keywords.length - 1) {
+            // 最后一个关键词，使用并列连接
+            const finalConnectorType = getRandomItem(Object.keys(connectorSets));
+            const finalConnector = getRandomItem(connectorSets[finalConnectorType]);
+            prompt += `，以及${finalConnector}${keywords[i]}`;
+          } else {
+            // 中间关键词，使用普通连接
+            const connectorType = getRandomItem(Object.keys(connectorSets));
+            const connector = getRandomItem(connectorSets[connectorType]);
+            prompt += `，${connector}${keywords[i]}`;
+          }
+        }
+      }
+      
+      // 扩展艺术风格库
+      const artStyles = [
+        '超写实 (hyperrealistic)', '3D渲染 (3D rendering)', '电影灯光 (cinematic lighting)', 
+        '印象派 (Impressionism)', '水彩画 (Watercolor)', '中国古风 (Chinese ancient style)',
+        '油画风格 (oil painting)', '素描 (sketch)', '卡通风格 (cartoon style)',
+        '蒸汽波 (vaporwave)', '赛博朋克 (cyberpunk)', '极简主义 (minimalism)'
+      ];
+      
+      // 扩展质量描述库
+      const qualities = [
+        '细节丰富 (highly detailed)', '超高清 (ultra-high definition)', '8K分辨率 (8K resolution)',
+        '专业级品质 (professional quality)', '逼真渲染 (realistic rendering)', 
+        '精细纹理 (fine texture)', '锐利聚焦 (sharp focus)'
+      ];
+      
+      // 扩展氛围描述库
+      const moods = [
+        '氛围温馨', '氛围宁静', '色彩鲜艳', '光线柔和', '构图和谐', '意境深远',
+        '充满活力', '神秘氛围', '梦幻般', '史诗感', '宁静致远', '引人入胜',
+        '情感丰富', '视觉冲击力强', '平衡和谐'
+      ];
+      
+      // 随机选择不同数量的描述元素（增加多样性）
+      const styleCount = Math.floor(Math.random() * 3) + 1; // 1-3个风格元素
+      const selectedStyles = [];
+      
+      if (Math.random() > 0.3) selectedStyles.push(getRandomItem(artStyles));
+      if (Math.random() > 0.3) selectedStyles.push(getRandomItem(qualities));
+      if (Math.random() > 0.3) selectedStyles.push(getRandomItem(moods));
+      
+      // 按自然语言顺序添加风格描述
+      if (selectedStyles.length > 0) {
+        prompt += '，' + selectedStyles.join('，');
+      }
+      
+      // 添加细节增强描述（30%概率）
+      if (Math.random() > 0.7) {
+        const detailEnhancers = [
+          '光影效果处理精细',
+          '色彩搭配和谐统一',
+          '构图巧妙平衡',
+          '细节刻画入微',
+          '空间感强烈',
+          '质感表现出色'
+        ];
+        prompt += '，' + getRandomItem(detailEnhancers);
+      }
+      
+      return prompt;
+    }
+    
+    // 辅助函数：获取数组中的随机元素
+    function getRandomItem(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+    
+    // 传统结构化提示词生成（保留原有功能）
+    function generatePrompt() {
+      const artStyle = document.getElementById('art-style').value;
+      const quality = document.getElementById('quality').value;
+      const subject = document.getElementById('subject').value;
+      const action = document.getElementById('action').value;
+      const environment = document.getElementById('environment').value;
+      const dynamicElements = document.getElementById('dynamic-elements').value;
+      const colorStyle = document.getElementById('color-style').value;
+      const lighting = document.getElementById('lighting').value;
+      const resolution = document.getElementById('resolution').value;
+      
+      let promptParts = [];
+      
+      if (subject) promptParts.push(subject);
+      if (action) promptParts.push(action);
+      if (environment) promptParts.push(environment);
+      if (dynamicElements) promptParts.push(dynamicElements);
+      
+      const styleParts = [];
+      if (artStyle) styleParts.push(artStyle);
+      if (quality) styleParts.push(quality);
+      if (colorStyle) styleParts.push(colorStyle);
+      if (lighting) styleParts.push(lighting);
+      
+      if (styleParts.length > 0) {
+        promptParts.push(styleParts.join(', '));
+      }
+      
+      const prompt = promptParts.join('，') + `，分辨率 ${resolution}`;
+      
+      return promptParts.length > 0 ? prompt : '请填写至少一个字段来生成提示词';
+    }
+    
+    // 为风格创建相似性分类，方便基于其他输入选择匹配的风格
+    // 支持同时匹配简体和繁体中文关键词
+    function getSimilarStyle(mainSubject, sceneConstraint, colorTone) {
+      // 定义风格分类及其匹配关键词（同时支持简体和繁体）
+      const styleCategories = {
+        '写实风格': ['人物', '肖像', '照片', '真实', '人像', '寫實', '人物肖像'],
+        '艺术绘画': ['风景', '山水', '自然', '画家', '繪畫', '油畫', '水彩', '中國畫', '山水畫'],
+        '动漫风格': ['动漫', '卡通', '角色', '可爱', '動漫', '漫畫', '二次元', '卡通人物', 'Q版'],
+        '科幻风格': ['未来', '科技', '太空', '赛博朋克', '科幻', '未來', '科技感', '賽博朋克', '蒸汽朋克'],
+        '古风风格': ['古代', '传统', '古典', '历史', '古風', '傳統', '古典', '中國風', '唐宋'],
+        '现代设计': ['现代', '简约', '时尚', '建筑', '現代', '簡約', '時尚', '建築', '設計'],
+        '暗黑哥特': ['暗黑', '哥特', '恐怖', '神秘', '黑暗', '哥特式', '哥特風格'],
+        '清新唯美': ['清新', '唯美', '明亮', '柔和', '浪漫', '治愈', '小清新'],
+        '复古怀旧': ['复古', '怀旧', '老照片', '旧时代', '復古', '懷舊', '民國', '懷舊風格'],
+        '工业科技': ['工业', '机械', '齿轮', '金属', '工廠', '機械', '科技'],
+        '水墨丹青': ['水墨', '丹青', '国画', '中国画', '文人画', '山水畫'],
+        '超现实主义': ['超现实', '梦幻', '荒诞', '梦境', '超現實'],
+        '立体主义': ['立体', '几何', '多角度', '立方體', '立體主義'],
+        '表现主义': ['表现', '情感', '夸张', '色彩强烈', '表現主義'],
+        '波普艺术': ['波普', '流行', '商业', '安迪沃霍尔', '波普藝術']
+      };
+      
+      // 组合所有可用的文本输入用于匹配
+      const combinedInput = (mainSubject || '') + ' ' + (sceneConstraint || '') + ' ' + (colorTone || '');
+      const lowerInput = combinedInput.toLowerCase();
+      
+      // 检查输入是否匹配特定风格分类
+      for (const [category, keywords] of Object.entries(styleCategories)) {
+        if (keywords.some(keyword => lowerInput.includes(keyword.toLowerCase()))) {
+          // 为该分类选择合适的风格描述
+          const categoryStyles = {
+            '写实风格': ['超写实', '逼真写实', '照片级真实感', '高清写实', '寫實主義'],
+            '艺术绘画': ['油画风格', '水彩画', '印象派', '中国传统水墨画', '油畫風格'],
+            '动漫风格': ['日本动漫风格', '卡通风格', '二次元风格', '漫画风格', '動漫風格'],
+            '科幻风格': ['赛博朋克', '未来主义', '蒸汽波', '太空科幻', '科幻風格', '賽博朋克風格'],
+            '古风风格': ['中国古风', '传统水墨画', '古典油画', '东方美学', '古風', '中國風格'],
+            '现代设计': ['极简主义', '现代设计', '扁平化设计', '几何抽象', '現代風格', '簡約設計'],
+            '暗黑哥特': ['暗黑风格', '哥特风格', '恐怖画风', '哥特式风格', '暗黑哥特風'],
+            '清新唯美': ['小清新', '唯美画风', '治愈系', '清新水彩', '清新唯美'],
+            '复古怀旧': ['复古风格', '怀旧风', '民国风', '老式照片', '復古風格'],
+            '工业科技': ['工业风格', '机械风', '蒸汽朋克', '工业革命', '工業風格'],
+            '水墨丹青': ['水墨风格', '丹青风格', '国画风格', '中国水墨画', '水墨丹青'],
+            '超现实主义': ['超现实主义风格', '梦幻风格', '荒诞艺术', '超現實主義'],
+            '立体主义': ['立体主义风格', '几何风格', '多角度艺术', '立體主義'],
+            '表现主义': ['表现主义风格', '情感艺术', '夸张表现', '表現主義'],
+            '波普艺术': ['波普艺术风格', '流行文化艺术', '商业艺术', '波普藝術']
+          };
+          return getRandomItem(categoryStyles[category]);
+        }
+      }
+      
+      // 如果没有找到匹配的分类，返回默认的随机风格
+      return getRandomItem(structuredFormatData.styleDescriptions);
+    }
+    
+    // 新的结构化提示词生成函数 - 符合七个部分格式要求
+    function structuredPromptGenerator(styleDesc, sceneConstraint, mainSubject, details, colorTone, atmosphere, styleSuppl) {
+        // 为缺失的字段自动补充内容
+        // 严格保留用户输入的风格，如果用户已指定风格，则不进行任何随机切换或相似风格匹配
+        if (!styleDesc || styleDesc.trim() === '') {
+          // 当用户未指定风格时，基于其他输入选择相似风格
+          styleDesc = getSimilarStyle(mainSubject, sceneConstraint, colorTone);
+        }
+        // 确保用户输入的风格完全被保留，没有被截断或修改
+        styleDesc = styleDesc.trim();
+        
+        if (!sceneConstraint || sceneConstraint.trim() === '') {
+          sceneConstraint = getRandomItem(structuredFormatData.sceneConstraints);
+        }
+      
+      if (!mainSubject || mainSubject.trim() === '') {
+        // 如果主体缺失，随机选择一个常见主体
+        const commonSubjects = ['人物', '动物', '风景', '建筑', '静物', '抽象元素'];
+        mainSubject = getRandomItem(commonSubjects);
+      }
+      
+      if (!details || details.trim() === '') {
+        // 生成细节描述，融入主体信息
+        let detailTemplate = getRandomItem(structuredFormatData.detailRequirements);
+        detailTemplate = detailTemplate.replace('{subject}', mainSubject);
+        detailTemplate = detailTemplate.replace('{emotion}', getRandomItem(['情感', '故事', '生命力', '活力']));
+        detailTemplate = detailTemplate.replace('{elements}', getRandomItem(['自然元素', '环境细节', '光影效果', '纹理特征']));
+        details = detailTemplate;
+      }
+      
+      if (!colorTone || colorTone.trim() === '') {
+        colorTone = getRandomItem(structuredFormatData.colorRequirements);
+      }
+      
+      if (!atmosphere || atmosphere.trim() === '') {
+        atmosphere = getRandomItem(structuredFormatData.atmosphereRequirements);
+      }
+      
+      // 风格补充是与风格相关的质量描述，不是风格本身
+      // 无论用户是否指定了风格，都可以添加风格补充
+      // 如果用户未提供风格补充，随机选择一个合适的补充描述
+      if (!styleSuppl || styleSuppl.trim() === '') {
+        styleSuppl = getRandomItem(structuredFormatData.styleSupplements);
+      }
+      
+      // 存储七个部分的内容（现在所有字段都已填充）
+      const promptSections = {
+        style: styleDesc.trim(),
+        scene: sceneConstraint.trim(),
+        subject: mainSubject.trim(),
+        details: details.trim(),
+        color: colorTone.trim(),
+        atmosphere: atmosphere.trim(),
+        supplement: styleSuppl.trim()
+      };
+      
+      // 构建流畅的自然语言描述
+      let prompt = '';
+      
+      // 1. 开始描述风格和色彩
+      if (promptSections.style) {
+        prompt = '一幅' + promptSections.style + '的' + (promptSections.color ? promptSections.color + '，' : '');
+      } else if (promptSections.color) {
+        prompt = '色彩' + promptSections.color + '，';
+      }
+      
+      // 2. 描述场景背景
+      if (promptSections.scene) {
+        if (prompt) {
+          prompt += '画面背景是' + promptSections.scene + '，';
+        } else {
+          prompt = '画面呈现' + promptSections.scene + '，';
+        }
+      }
+      
+      // 3. 描述主体
+      if (promptSections.subject) {
+        if (prompt) {
+          // 根据场景和主体的内容调整句式
+          if (prompt.includes('背景是') || prompt.includes('呈现')) {
+            prompt += '画面主体是' + promptSections.subject + '，';
+          } else {
+            prompt += promptSections.subject + '，';
+          }
+        } else {
+          prompt = '主体是' + promptSections.subject + '，';
+        }
+      }
+      
+      // 4. 添加细节描述
+      if (promptSections.details) {
+        prompt += promptSections.details + '，';
+      }
+      
+      // 5. 添加氛围描述
+      if (promptSections.atmosphere) {
+        prompt += '整体氛围' + promptSections.atmosphere + '，';
+      }
+      
+      // 6. 添加风格补充细节
+      if (promptSections.supplement) {
+        prompt += promptSections.supplement + '，';
+      }
+      
+      // 移除末尾逗号并添加句号
+      prompt = prompt.replace(/，$/, '');
+      if (prompt && !prompt.endsWith('。')) {
+        prompt += '。';
+      }
+      
+      // 如果没有任何内容，返回提示信息
+      if (prompt === '') {
+        return '请至少填写一个提示词部分来生成结构化描述';
+      }
+      
+      return prompt;
+    }
+    
+    // 解析七个部分格式的提示词（用于反向解析功能）
+    function parseStructuredPrompt(prompt) {
+      const sections = {
+        style: '',
+        scene: '',
+        subject: '',
+        details: '',
+        color: '',
+        atmosphere: '',
+        supplement: ''
+      };
+      
+      // 这里可以添加更复杂的解析逻辑
+      // 目前返回空对象，后续可以根据需要完善解析功能
+      return sections;
+    }
+    
+    // 快速生成提示词 - 优化版
+    function quickGeneratePrompt() {
+      const keywords = quickKeywordsInput.value;
+      
+      // 检查输入有效性
+      if (!keywords || keywords.trim() === '') {
+        // 显示友好的提示信息
+        showNotification('请输入关键词以生成提示词', 'warning');
+        return;
+      }
+      
+      // 生成自然语言提示词
+      const prompt = generateNaturalPrompt(keywords);
+      
+      // 更新预览区域
+      promptPreview.value = prompt;
+      
+      // 更新优化建议
+      updateSuggestions();
+      
+      // 添加到历史记录
+      addToHistory(prompt);
+      
+      // 显示成功提示
+      showNotification('提示词已生成', 'success');
+    }
+    
+    // 简单的通知函数
+    function showNotification(message, type = 'info') {
+      // 检查是否已有通知元素
+      let notification = document.getElementById('quick-prompt-notification');
+      
+      if (!notification) {
+        // 创建新的通知元素
+        notification = document.createElement('div');
+        notification.id = 'quick-prompt-notification';
+        notification.className = 'fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 z-50';
+        document.body.appendChild(notification);
+      }
+      
+      // 设置通知样式和内容
+      notification.textContent = message;
+      
+      // 根据类型设置不同的背景色
+      if (type === 'success') {
+        notification.classList.add('bg-green-500', 'text-white');
+        notification.classList.remove('bg-yellow-500', 'bg-red-500', 'bg-blue-500');
+      } else if (type === 'warning') {
+        notification.classList.add('bg-yellow-500', 'text-white');
+        notification.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500');
+      } else if (type === 'error') {
+        notification.classList.add('bg-red-500', 'text-white');
+        notification.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-blue-500');
+      } else {
+        notification.classList.add('bg-blue-500', 'text-white');
+        notification.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500');
+      }
+      
+      // 显示通知
+      notification.style.opacity = '1';
+      notification.style.transform = 'translateY(0)';
+      
+      // 3秒后自动隐藏
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(20px)';
+        
+        // 完全隐藏后移除元素
+        setTimeout(() => {
+          if (notification && notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    // 更新提示词预览
+    function updatePromptPreview() {
+      // 检查当前提示词是否是通过快速关键词生成的（非结构化表单生成的）
+      const currentPrompt = promptPreview.value;
+      const isFromQuickGenerate = !currentPrompt.includes('分辨率') && !currentPrompt.includes('请填写至少一个字段来生成提示词');
+      
+      // 如果不是快速生成的，或者表单有输入，则更新预览
+      const hasFormInput = promptForm.querySelector('input[value]:not([value=""]), textarea[value]:not([value=""]), select[value]:not([value=""])');
+      if (!isFromQuickGenerate || !currentPrompt || (hasFormInput && promptPreview.value === '请填写至少一个字段来生成提示词')) {
+        const prompt = generatePrompt();
+        promptPreview.value = prompt;
+      }
+      
+      // 更新优化建议
+      updateSuggestions();
+    }
+
+    // 更新优化建议
+    function updateSuggestions() {
+      const artStyle = document.getElementById('art-style').value;
+      const quality = document.getElementById('quality').value;
+      const subject = document.getElementById('subject').value;
+      const environment = document.getElementById('environment').value;
+      const colorStyle = document.getElementById('color-style').value;
+      const lighting = document.getElementById('lighting').value;
+      
+      const suggestions = [];
+      
+      if (!artStyle) {
+        suggestions.push('选择一个艺术风格可以让生成的图像更符合您的预期');
+      }
+      
+      if (!quality) {
+        suggestions.push('添加画质描述可以提高生成图像的质量');
+      }
+      
+      if (subject && !subject.includes('的')) {
+        suggestions.push('在主体描述中添加更多细节，如"穿着红色连衣裙的女孩"');
+      }
+      
+      if (!environment) {
+        suggestions.push('添加环境描述可以让场景更加丰富');
+      }
+      
+      if (!colorStyle || !lighting) {
+        suggestions.push('指定色彩和光影效果可以增强图像的视觉冲击力');
+      }
+      
+      // 如果没有特定建议，显示通用建议
+      if (suggestions.length === 0) {
+        suggestions.push('考虑添加艺术家参考，如"风格类似于宫崎骏"');
+        suggestions.push('增加构图描述，如"低角度拍摄"或"鸟瞰视角"');
+        suggestions.push('添加更多具体细节，如材质、纹理和表面处理');
+      }
+      
+      // 更新建议列表
+      promptSuggestions.innerHTML = '';
+      suggestions.forEach(suggestion => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start';
+        li.innerHTML = `
+          <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+          <span>${suggestion}</span>
+        `;
+        promptSuggestions.appendChild(li);
+      });
+    }
+
+    // 复制提示词到剪贴板
+    function copyPrompt() {
+      promptPreview.select();
+      document.execCommand('copy');
+      
+      // 显示复制成功通知
+      copyNotification.classList.remove('hidden');
+      setTimeout(() => {
+        copyNotification.classList.add('hidden');
+      }, 2000);
+    }
+
+    // 编辑提示词
+    function editPrompt() {
+      promptPreview.removeAttribute('readonly');
+      promptPreview.focus();
+      
+      // 切换按钮图标
+      editPromptBtn.innerHTML = '<i class="fa fa-check"></i>';
+      
+      // 点击按钮保存编辑
+      editPromptBtn.onclick = saveEditedPrompt;
+    }
+
+    // 保存编辑后的提示词
+    function saveEditedPrompt() {
+      promptPreview.setAttribute('readonly', true);
+      
+      // 切换按钮图标
+      editPromptBtn.innerHTML = '<i class="fa fa-pencil"></i>';
+      
+      // 恢复点击事件
+      editPromptBtn.onclick = editPrompt;
+      
+      // 添加编辑后的提示词到历史记录
+      addToHistory(promptPreview.value);
+      
+      // 显示编辑成功提示
+      showNotification('提示词已更新', 'success');
+      
+      // 更新优化建议
+      updateSuggestions();
+    }
+
+    // 重置表单
+    function resetForm() {
+      promptForm.reset();
+      updatePromptPreview();
+      stepsValue.textContent = '30';
+      creativityValue.textContent = '1.0';
+    }
+
+    // 生成随机提示词
+    function generateRandomPrompt() {
+      const randomSubject = randomSubjects[Math.floor(Math.random() * randomSubjects.length)];
+      const randomAction = randomActions[Math.floor(Math.random() * randomActions.length)];
+      const randomEnvironment = randomEnvironments[Math.floor(Math.random() * randomEnvironments.length)];
+      const randomColorStyle = randomColorStyles[Math.floor(Math.random() * randomColorStyles.length)];
+      const randomLighting = randomLighting[Math.floor(Math.random() * randomLighting.length)];
+      const randomArtStyle = randomArtStyles[Math.floor(Math.random() * randomArtStyles.length)];
+      
+      document.getElementById('art-style').value = randomArtStyle;
+      document.getElementById('quality').value = '细节丰富 (highly detailed)';
+      document.getElementById('subject').value = randomSubject;
+      document.getElementById('action').value = randomAction;
+      document.getElementById('environment').value = randomEnvironment;
+      document.getElementById('dynamic-elements').value = '';
+      document.getElementById('color-style').value = randomColorStyle;
+      document.getElementById('lighting').value = randomLighting;
+      
+      updatePromptPreview();
+    }
+
+    // 生成图像
+    function generateImage() {
+      // 显示模态框
+      generateModal.classList.remove('hidden');
+      generationProgress.classList.remove('hidden');
+      generationResult.classList.add('hidden');
+      
+      // 重置进度条
+      progressBar.style.width = '0%';
+      progressPercentage.textContent = '0%';
+      
+      // 模拟生成进度
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 10) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          
+          // 延迟显示结果，模拟最终处理
+          setTimeout(() => {
+            generationProgress.classList.add('hidden');
+            generationResult.classList.remove('hidden');
+            
+            // 设置生成的图像（使用示例图像）
+            const exampleImages = [
+              'https://p26-doubao-search-sign.byteimg.com/labis/image/5ed22fb401df6cd3e3d6d73f9fc90e20~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=vR92arDzYDDkoIROghlh6conYO4%3D',
+              'https://p11-doubao-search-sign.byteimg.com/labis/image/e32fbdb124eb8ed21e5988da8953106e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=6fNfBkGeunEntWy%2FKvn%2B5ZVosyE%3D',
+              'https://p3-doubao-search-sign.byteimg.com/tos-cn-i-6w9my0ksvp/472404b78954468f90bd79f32f4ec3c8~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778578191&x-signature=lHxrUVf62vM4FbV%2BO%2FHz%2FsOYpM8%3D'
+            ];
+            const randomImage = exampleImages[Math.floor(Math.random() * exampleImages.length)];
+            generatedImage.src = randomImage;
+            
+            // 添加到历史记录
+            addToHistory(promptPreview.value);
+          }, 500);
+        }
+        
+        progressBar.style.width = `${progress}%`;
+        progressPercentage.textContent = `${progress}%`;
+      }, 200);
+    }
+
+    // 关闭模态框
+    function closeModal() {
+      generateModal.classList.add('hidden');
+    }
+
+    // 下载图像
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.href = generatedImage.src;
+      link.download = 'generated-image.png';
+      link.click();
+    }
+
+    // 保存提示词
+    function savePrompt() {
+      const prompt = promptPreview.value;
+      if (!prompt || prompt === '请填写至少一个字段来生成提示词') {
+        // 使用新的通知系统替代alert
+        showNotification('请先生成一个有效的提示词', 'warning');
+        return;
+      }
+      
+      // 添加到历史记录
+      addToHistory(prompt);
+      
+      // 显示保存成功提示，使用新的通知系统
+      showNotification('提示词已保存到历史记录', 'success');
+    }
+
+    // 添加到历史记录
+    function addToHistory(prompt) {
+      // 检查提示词是否有效
+      if (!prompt || prompt === '请填写至少一个字段来生成提示词') return;
+      
+      // 创建历史记录项
+      const historyItem = document.createElement('div');
+      historyItem.className = 'bg-dark-light rounded-lg p-3 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer';
+      
+      // 提取标题（前20个字符）
+      const title = prompt.length > 20 ? prompt.substring(0, 20) + '...' : prompt;
+      
+      // 获取当前时间
+      const now = new Date();
+      const timeString = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+      const dateString = now.toLocaleDateString();
+      const dateTimeString = now.toDateString() === new Date().toDateString() ? '今天 ' + timeString : dateString + ' ' + timeString;
+      
+      // 设置内容
+      historyItem.innerHTML = `
+        <div class="flex justify-between items-start">
+          <h4 class="font-medium text-sm">${title}</h4>
+          <span class="text-xs text-gray-400">${dateTimeString}</span>
+        </div>
+        <p class="text-xs text-gray-300 mt-1 line-clamp-1">${prompt}</p>
+      `;
+      
+      // 添加点击事件
+      historyItem.onclick = () => {
+        // 设置预览值
+        promptPreview.value = prompt;
+        
+        // 更新优化建议
+        updateSuggestions();
+        
+        // 聚焦到预览区域，方便用户操作
+        promptPreview.focus();
+      };
+      
+      // 添加到历史记录列表的顶部
+      historyList.insertBefore(historyItem, historyList.firstChild);
+      
+      // 保存到本地存储
+      saveHistoryToLocalStorage();
+    }
+
+    // 保存历史记录到本地存储
+    function saveHistoryToLocalStorage() {
+      const historyItems = [];
+      historyList.querySelectorAll('.bg-dark-light').forEach(item => {
+        const prompt = item.querySelector('p').textContent;
+        const title = item.querySelector('h4').textContent;
+        const time = item.querySelector('span').textContent;
+        
+        historyItems.push({
+          prompt,
+          title,
+          time
+        });
+      });
+      
+      localStorage.setItem('promptHistory', JSON.stringify(historyItems));
+    }
+
+    // 从本地存储加载历史记录
+    function loadHistoryFromLocalStorage() {
+      const historyItems = JSON.parse(localStorage.getItem('promptHistory') || '[]');
+      
+      historyItems.forEach(item => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'bg-dark-light rounded-lg p-3 border border-gray-700 hover:border-primary transition-all-300 cursor-pointer';
+        historyItem.innerHTML = `
+          <div class="flex justify-between items-start">
+            <h4 class="font-medium text-sm">${item.title}</h4>
+            <span class="text-xs text-gray-400">${item.time}</span>
+          </div>
+          <p class="text-xs text-gray-300 mt-1 line-clamp-1">${item.prompt}</p>
+        `;
+        
+        historyItem.onclick = () => {
+          promptPreview.value = item.prompt;
+          // 更新优化建议
+          updateSuggestions();
+        };
+        
+        historyList.appendChild(historyItem);
+      });
+    }
+
+    // 清除历史记录
+    function clearHistory() {
+      if (confirm('确定要清除所有历史记录吗？')) {
+        historyList.innerHTML = '';
+        localStorage.removeItem('promptHistory');
+      }
+    }
+
+    // 切换主题
+    function toggleTheme() {
+      const body = document.body;
+      const isDark = body.classList.contains('bg-gradient-dark');
+      
+      if (isDark) {
+        body.classList.remove('bg-gradient-dark');
+        body.classList.add('bg-gradient-to-br', 'from-gray-100', 'to-gray-200');
+        body.classList.remove('text-light');
+        body.classList.add('text-gray-800');
+        
+        themeToggleBtn.innerHTML = '<i class="fa fa-sun-o text-yellow-500"></i>';
+      } else {
+        body.classList.remove('bg-gradient-to-br', 'from-gray-100', 'to-gray-200');
+        body.classList.add('bg-gradient-dark');
+        body.classList.remove('text-gray-800');
+        body.classList.add('text-light');
+        
+        themeToggleBtn.innerHTML = '<i class="fa fa-moon-o text-secondary"></i>';
+      }
+    }
+
+    // 搜索模板
+    function searchTemplates() {
+      const searchTerm = templateSearch.value.toLowerCase();
+      
+      templateCards.forEach(card => {
+        const title = card.querySelector('h4').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        const category = card.querySelector('span').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm) || category.includes(searchTerm)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // 加载更多模板
+    function loadMoreTemplates() {
+      // 模拟加载更多模板
+      loadMoreTemplatesBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
+      
+      setTimeout(() => {
+        loadMoreTemplatesBtn.innerHTML = '没有更多模板了';
+        loadMoreTemplatesBtn.disabled = true;
+        loadMoreTemplatesBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }, 1500);
+    }
+
+    // 使用模板
+    function useTemplate(templateId) {
+      const template = promptTemplates.find(t => t.id === templateId);
+      
+      if (template) {
+        document.getElementById('art-style').value = template.values.artStyle || '';
+        document.getElementById('quality').value = template.values.quality || '';
+        document.getElementById('subject').value = template.values.subject || '';
+        document.getElementById('action').value = template.values.action || '';
+        document.getElementById('environment').value = template.values.environment || '';
+        document.getElementById('dynamic-elements').value = template.values.dynamicElements || '';
+        document.getElementById('color-style').value = template.values.colorStyle || '';
+        document.getElementById('lighting').value = template.values.lighting || '';
+        
+        updatePromptPreview();
+      }
+    }
+
+    // 事件监听器
+    promptForm.addEventListener('input', updatePromptPreview);
+    
+    copyPromptBtn.addEventListener('click', copyPrompt);
+    
+    editPromptBtn.addEventListener('click', editPrompt);
+    
+    resetFormBtn.addEventListener('click', resetForm);
+    
+    randomPromptBtn.addEventListener('click', generateRandomPrompt);
+    
+    generateImageBtn.addEventListener('click', generateImage);
+    
+    closeModalBtn.addEventListener('click', closeModal);
+    
+    downloadImageBtn.addEventListener('click', downloadImage);
+    
+    regenerateImageBtn.addEventListener('click', generateImage);
+    
+    savePromptBtn.addEventListener('click', savePrompt);
+    
+    themeToggleBtn.addEventListener('click', toggleTheme);
+    
+    stepsInput.addEventListener('input', () => {
+      stepsValue.textContent = stepsInput.value;
+    });
+    
+    creativityInput.addEventListener('input', () => {
+      creativityValue.textContent = creativityInput.value;
+    });
+    
+    templateSearch.addEventListener('input', searchTemplates);
+    
+    loadMoreTemplatesBtn.addEventListener('click', loadMoreTemplates);
+    
+    clearHistoryBtn.addEventListener('click', clearHistory);
+    
+    // 新增事件监听器 - 快速提示词生成
+    generateQuickPromptBtn.addEventListener('click', quickGeneratePrompt);
+
+// 结构化提示词生成功能
+if (generateStructuredPromptBtn) {
+    generateStructuredPromptBtn.addEventListener('click', () => {
+        const structuredData = {
+            style: structuredStyleInput.value.trim(),
+            scene: structuredSceneInput.value.trim(),
+            subject: structuredSubjectInput.value.trim(),
+            details: structuredDetailsInput.value.trim(),
+            color: structuredColorInput.value.trim(),
+            mood: structuredMoodInput.value.trim(),
+            supplement: structuredSupplementInput.value.trim()
+        };
+        
+        const prompt = structuredPromptGenerator(
+            structuredData.style,
+            structuredData.scene,
+            structuredData.subject,
+            structuredData.details,
+            structuredData.color,
+            structuredData.mood,
+            structuredData.supplement
+        );
+        
+        if (prompt) {
+            promptPreview.value = prompt;
+            updateSuggestions(prompt);
+            showNotification('结构化提示词已生成！', 'success');
+            addToHistory('结构化提示词', prompt);
+            
+            // 自动聚焦到提示词预览区域
+            setTimeout(() => {
+                promptPreview.focus();
+                // 滚动到提示词预览区域
+                promptPreview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+}
+
+// 加载结构化提示词示例
+if (loadStructuredExampleBtn) {
+    loadStructuredExampleBtn.addEventListener('click', () => {
+        structuredStyleInput.value = '一幅风格清新的二次元插画，日系动画风格';
+        structuredSceneInput.value = '晴朗的夏日，蓝天白云，湖水清澈，周围绿树环绕，充满自然生机';
+        structuredSubjectInput.value = '一位身着蓝色短袖套装的少年，手持透明雨伞，立于湖畔草地旁，神情宁静、悠闲';
+        structuredDetailsInput.value = '湖面倒映着少年与岸边的花草（包括睡莲、各色小花），草地上绿意盎然，花草与湖水细腻的倒影，光影柔和';
+        structuredColorInput.value = '画面色调明亮清新，带有轻松、治愈的感觉';
+        structuredMoodInput.value = '营造出宁静、治愈的夏日户外氛围，传递悠闲惬意的感觉';
+        structuredSupplementInput.value = '细腻的光影与自然的倒影相得益彰，整体构图平衡';
+        
+        showNotification('示例数据已加载，请点击生成按钮', 'info');
+    });
+}
+    
+    // 允许在关键词输入框中按Enter键生成提示词
+    quickKeywordsInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        quickGeneratePrompt();
+      }
+    });
+    
+    // 为模板卡片添加点击事件
+    templateCards.forEach(card => {
+      const useBtn = card.querySelector('button');
+      const templateId = card.querySelector('.text-xs.text-gray-400').textContent.split(': ')[1];
+      
+      useBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        useTemplate(templateId);
+      });
+      
+      card.addEventListener('click', () => {
+        useTemplate(templateId);
+      });
+    });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      updatePromptPreview();
+      loadHistoryFromLocalStorage();
+    });
+  </script>
+</body>
+</html>
